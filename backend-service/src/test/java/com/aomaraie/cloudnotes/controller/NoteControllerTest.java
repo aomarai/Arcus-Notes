@@ -1,6 +1,5 @@
 package com.aomaraie.cloudnotes.controller;
 
-import com.aomaraie.cloudnotes.controller.NoteController;
 import com.aomaraie.cloudnotes.exception.ResourceNotFoundException;
 import com.aomaraie.cloudnotes.model.Note;
 import com.aomaraie.cloudnotes.repository.NoteRepository;
@@ -9,12 +8,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class NoteControllerTest {
@@ -39,6 +39,27 @@ public class NoteControllerTest {
 
         assertEquals(1, result.size());
         verify(noteRepository, times(1)).findAll();
+    }
+
+    @Test
+    public void getNoteReturnsNoteWhenIdExists() {
+        Long noteId = 1L;
+        Note note = new Note();
+        when(noteRepository.findById(noteId)).thenReturn(Optional.of(note));
+
+        Note result = noteController.getNote(noteId);
+
+        assertEquals(note, result);
+        verify(noteRepository, times(1)).findById(noteId);
+    }
+
+    @Test
+    public void getNoteThrowsResourceNotFoundExceptionWhenIdDoesNotExist() {
+        Long noteId = 1L;
+        when(noteRepository.findById(noteId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> noteController.getNote(noteId));
+        verify(noteRepository, times(1)).findById(noteId);
     }
 
     @Test
