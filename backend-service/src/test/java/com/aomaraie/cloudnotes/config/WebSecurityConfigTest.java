@@ -1,16 +1,22 @@
 package com.aomaraie.cloudnotes.config;
 
-import com.aomaraie.cloudnotes.config.WebSecurityConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+
+@SpringBootTest
+@TestPropertySource(properties = {
+        "spring.datasource.url=jdbc:postgresql://localhost:5432/notesdb",
+        "spring.datasource.username=user",
+        "spring.datasource.password=password"
+})
 
 public class WebSecurityConfigTest {
 
