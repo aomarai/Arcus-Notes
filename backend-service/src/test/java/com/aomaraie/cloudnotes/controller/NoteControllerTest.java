@@ -1,5 +1,6 @@
 package com.aomaraie.cloudnotes.controller;
 
+import com.aomaraie.cloudnotes.containers.SharedDatabaseContainer;
 import com.aomaraie.cloudnotes.exception.ResourceNotFoundException;
 import com.aomaraie.cloudnotes.model.Note;
 import com.aomaraie.cloudnotes.repository.NoteRepository;
@@ -8,8 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.containers.PostgreSQLContainer;
 
 import java.util.Arrays;
 import java.util.List;
@@ -19,14 +21,16 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-@TestPropertySource(properties = {
-        "spring.datasource.url=jdbc:postgresql://localhost:5432/notesdb",
-        "spring.datasource.username=user",
-        "spring.datasource.password=password"
-})
-
 public class NoteControllerTest {
+
+    public static PostgreSQLContainer<?> postgreSQLContainer = SharedDatabaseContainer.getInstance();
+
+    @DynamicPropertySource
+    static void registerPgProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
+    }
 
     @InjectMocks
     NoteController noteController;

@@ -28,6 +28,8 @@ spec:
                   key: password
             - name: POSTGRES_DB
               value: notes
+            - name: SPRING_PROFILES_ACTIVE
+              value: "prod"
 ---
 apiVersion: apps/v1
 kind: Deployment

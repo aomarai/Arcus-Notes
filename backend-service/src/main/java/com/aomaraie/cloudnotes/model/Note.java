@@ -1,9 +1,8 @@
 package com.aomaraie.cloudnotes.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.Date;
 
 @Entity
 public class Note {
@@ -11,6 +10,8 @@ public class Note {
     private long id;
     private String title;
     private String content;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date date;
 
     public Note() {
         this("Default Title", "Default Content");
@@ -19,6 +20,20 @@ public class Note {
     public Note (String title, String content) {
         this.title = title;
         this.content = content;
+    }
+
+    @PrePersist
+    public void onCreate() {
+        date = new Date();
+    }
+
+    @PreUpdate
+    public void onUpdate() {
+        date = new Date();
+    }
+
+    public Date getDate() {
+        return date;
     }
 
     public long getId() {
